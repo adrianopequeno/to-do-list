@@ -1,29 +1,15 @@
-import db from "../../../db/index.js";
+import usuarioCadastroService from "../../../services/usuarioCadastroService.js";
 
 export const resolvers = {
   Query: {
-    contatos: async () => await db("contatos"),
+    contatos: async () => usuarioCadastroService.contatos(), // lista todos os contatos
   },
   Mutation: {
-    criarContato: async (_, { data }) => {
-      return await (
-        await db("contatos").insert(data).returning("*")
-      )[0];
-    },
-    atualizarContato: async (_, { id, data }) => {
-      return await (
-        await db("contatos").where({ id }).update(data).returning("*")
-      )[0];
-    },
-    detelarContato: async (_, { filtro }) => {
-      if (filtro.id) {
-        return await db("contatos").where({ id: filtro.id }).delete();
-      }
-      if (filtro.email) {
-        return await db("contatos").where({ email: filtro.email }).delete();
-      }
-
-      throw new Error("Favor passar um parametro!!!");
-    },
+    criarContato: async (_, { data }) =>
+      await usuarioCadastroService.criarContato(data),
+    atualizarContato: async (_, { id, data }) =>
+      await usuarioCadastroService.atualizarContato(id, data),
+    deletarContato: async (_, { filtro }) =>
+      await usuarioCadastroService.deletarContato(filtro),
   },
 };
